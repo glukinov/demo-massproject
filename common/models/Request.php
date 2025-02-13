@@ -74,6 +74,22 @@ class Request extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
+    public function beforeSave($insert)
+    {
+        if (!parent::beforeSave($insert)) {
+            return false;
+        }
+
+        if ($this->scenario === self::SCENARIO_UPDATE) {
+            $this->status = self::STATUS_RESOLVED;
+        }
+
+        return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function afterSave($insert, $changedAttributes)
     {
         parent::afterSave($insert, $changedAttributes);

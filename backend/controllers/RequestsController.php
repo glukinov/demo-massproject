@@ -108,8 +108,6 @@ class RequestsController extends Controller
             throw new BadRequestHttpException('Validation Error');
         }
 
-        $model->status = Request::STATUS_RESOLVED;
-
         if (!$model->save()) {
             throw new ServerErrorHttpException('Unexpected Error');
         }
