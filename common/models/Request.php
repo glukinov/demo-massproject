@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use Yii;
 use yii\behaviors\TimestampBehavior;
 
 /**
@@ -68,5 +69,25 @@ class Request extends \yii\db\ActiveRecord
             [['status'], 'default', 'value' => self::STATUS_ACTIVE],
             [['comment'], 'required', 'on' => [self::SCENARIO_UPDATE]],
         ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
+
+        if ($this->scenario === self::SCENARIO_UPDATE) {
+            $mail = Yii::$app->mailer->compose([
+                'html' => 'requestUpdate-html',
+                'text' => 'requestUpdate-text',
+            ], ['model' => $this]);
+
+            $mail->setFrom(Yii::$app->params['senderEmail'])
+                ->setTo($this->email)
+                ->setSubject(Yii::$app->params['request.subject'])
+                ->send();
+        }
     }
 }
