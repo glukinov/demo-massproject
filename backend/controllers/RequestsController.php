@@ -6,6 +6,7 @@ use common\models\Request;
 use common\models\RequestSearch;
 use Yii;
 use yii\filters\AccessControl;
+use yii\filters\Cors;
 use yii\filters\VerbFilter;
 use yii\filters\auth\HttpBearerAuth;
 use yii\rest\Controller;
@@ -26,7 +27,7 @@ class RequestsController extends Controller
         return array_merge(parent::behaviors(), [
             'authenticator' => [
                 'class' => HttpBearerAuth::class,
-                'except' => ['create'],
+                'except' => ['create', 'preflight'],
             ],
             'access' => [
                 'class' => AccessControl::class,
@@ -44,6 +45,15 @@ class RequestsController extends Controller
                     'index' => ['GET'],
                     'create' => ['POST'],
                     'update' => ['PUT'],
+                ],
+            ],
+            'cors' => [
+                'class' => Cors::class,
+                'cors' => [
+                    'Origin' => Yii::$app->params['cors.origin'],
+                    'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'OPTIONS'],
+                    'Access-Control-Allow-Credentials' => true,
+                    'Access-Control-Allow-Headers' => ['Authorization', 'Content-Type'],
                 ],
             ],
         ]);
@@ -113,6 +123,14 @@ class RequestsController extends Controller
         }
 
         return ['status' => 'ok'];
+    }
+
+    /**
+     * Allows to bypass the limitations of preflight requests.
+     */
+    public function actionPreflight()
+    {
+        // Do nothing
     }
 
     /**

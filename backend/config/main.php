@@ -41,7 +41,9 @@ return [
             'showScriptName' => false,
             'rules' => [
                 'POST <controller>' => '<controller>/create',
+                'OPTIONS <controller>' => '<controller>/preflight',
                 'PUT <controller>/<id:\\d+>' => '<controller>/update',
+                'OPTIONS <controller>/<id:\\d+>' => '<controller>/preflight',
             ],
         ],
     ],
