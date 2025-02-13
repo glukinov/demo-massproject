@@ -14,7 +14,9 @@ return [
     'modules' => [],
     'components' => [
         'request' => [
-            'csrfParam' => '_csrf-backend',
+            'parsers' => [
+                'application/json' => 'yii\web\JsonParser'
+            ],
         ],
         'user' => [
             'identityClass' => 'common\models\User',
@@ -38,6 +40,8 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                'POST <controller>' => '<controller>/create',
+                'PUT <controller>/<id:\\d+>' => '<controller>/update',
             ],
         ],
     ],
