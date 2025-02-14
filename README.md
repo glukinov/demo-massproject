@@ -4,8 +4,8 @@
 ```bash
 git clone git@github.com:glukinov/demo-massproject.git
 docker compose up -d
-php yii migrate
 php init
+php yii migrate
 php yii user/create
 ```
 
