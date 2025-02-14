@@ -1,0 +1,154 @@
+openapi: 3.0.3
+info:
+  title: Demo REST API
+  version: 0.0.1
+servers:
+  - url: http://localhost:21080
+paths:
+  /requests:
+    get:
+      tags:
+        - requests
+      summary: Finds requests by status
+      parameters:
+        - name: status
+          in: query
+          required: false
+          explode: true
+          schema:
+            type: string
+            default: 0
+            enum:
+              - 0
+              - 1
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Request'
+        '401':
+          description: Access Denined
+      security:
+        - bearerAuth: []
+    post:
+      tags:
+        - requests
+      summary: Creates a new request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: 'Иван Иванов'
+                email:
+                  type: string
+                  example: 'test@mail.ru'
+                message:
+                  type: string
+                  example: 'Привет, мир!'
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    format: int46
+                    example: 1
+        '400':
+          description: Validation Error
+        '500':
+          description: Unexpected Error
+  /requests/{id}:
+    put:
+      tags:
+        - requests
+      summary: Updates request by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comment:
+                  type: string
+                  example: 'Привет, мир!'
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'ok'
+        '400':
+          description: Validation Error
+        '401':
+          description: Access Denined
+        '404':
+          description: Request Not Found
+        '500':
+          description: Unexpected Error
+      security:
+        - bearerAuth: []
+components:
+  schemas:
+    Request:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        created_at:
+          type: integer
+          format: int64
+          example: 946674000
+        updated_at:
+          type: integer
+          format: int64
+          example: 946674000
+        name:
+          type: string
+          example: 'Иван Иванов'
+        email:
+          type: string
+          example: 'test@mail.ru'
+        message:
+          type: string
+          example: 'Привет, мир!'
+        comment:
+          type: string
+          example: 'Привет, мир!'
+        status:
+          type: string
+          description: pet status in the store
+          enum:
+            - 0
+            - 1
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
